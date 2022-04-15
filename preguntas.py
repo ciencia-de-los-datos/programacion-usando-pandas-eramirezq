@@ -8,6 +8,7 @@ Utilice los archivos `tbl0.tsv`, `tbl1.tsv` y `tbl2.tsv`, para resolver las preg
 
 """
 import pandas as pd
+import numpy  as np
 
 tbl0 = pd.read_csv("tbl0.tsv", sep="\t")
 tbl1 = pd.read_csv("tbl1.tsv", sep="\t")
@@ -22,7 +23,8 @@ def pregunta_01():
     40
 
     """
-    return
+    R1=len(tbl0)
+    return R1
 
 
 def pregunta_02():
@@ -33,7 +35,8 @@ def pregunta_02():
     4
 
     """
-    return
+    R2=tbl0.shape[1]
+    return R2
 
 
 def pregunta_03():
@@ -50,7 +53,9 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
+    R3=tbl0["_c1"].value_counts().sort_index(ascending=True)
+    
+    return R3
 
 
 def pregunta_04():
@@ -65,7 +70,8 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
+    R4=tbl0.groupby('_c1')['_c2'].mean()
+    return R4
 
 
 def pregunta_05():
@@ -81,8 +87,11 @@ def pregunta_05():
     D    7
     E    9
     Name: _c2, dtype: int64
+R7=tbl0.groupby('_c1')['_c2'].sum()
+
     """
-    return
+    R5=tbl0.groupby('_c1')['_c2'].max()
+    return R5
 
 
 def pregunta_06():
@@ -94,7 +103,10 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
+    R6=list(set(tbl1['_c4'].str.upper()))
+    R6.sort(reverse=False)
+    
+    return R6
 
 
 def pregunta_07():
@@ -110,7 +122,9 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
+    R7=tbl0.groupby('_c1')['_c2'].sum()
+
+    return R7
 
 
 def pregunta_08():
@@ -128,7 +142,9 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
+    tbl0['suma']=tbl0['_c0']+tbl0['_c2']
+    
+    return tbl0
 
 
 def pregunta_09():
@@ -146,7 +162,11 @@ def pregunta_09():
     39   39   E    5  1998-01-26  1998
 
     """
-    return
+    Dates=tbl0['_c3'].str.split('-',expand=True)
+    tbl0['year']=Dates[0]
+    
+    
+    return tbl0
 
 
 def pregunta_10():
@@ -163,7 +183,12 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    return
+    tbl0['_c2']=tbl0['_c2'].apply(lambda x:str(x))
+    Datos=tbl0.sort_values(by=['_c2'])
+    
+    R10=Datos.groupby('_c1').agg({'_c2':':'.join})
+
+    return R10
 
 
 def pregunta_11():
@@ -182,7 +207,10 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return
+    Ndata=tbl1.sort_values(by=['_c4'])
+    R11=Ndata.groupby('_c0',as_index=False).agg({'_c4':','.join})
+    
+    return R11
 
 
 def pregunta_12():
@@ -200,7 +228,11 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+    Aux=tbl2.sort_values(by=['_c5a'])
+    Aux['_c5']=Aux['_c5a']+':'+Aux['_c5b'].map(str)
+    R12=Aux.groupby('_c0',as_index=False).agg({'_c5':','.join})
+    
+    return R12
 
 
 def pregunta_13():
@@ -217,4 +249,7 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    Aux1=pd.merge(tbl0,tbl2,on='_c0')
+    R13=Aux1.groupby('_c1')['_c5b'].sum()
+    
+    return R13
